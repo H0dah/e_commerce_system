@@ -4,6 +4,8 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.models import User
+
 
 class ProductList(APIView):
     """
@@ -11,11 +13,24 @@ class ProductList(APIView):
     """
     # get products
     def get(self, request, format='json'):
-        
-        products = Product.objects.all()
-        sellerFilter = request.query_params['seller']
-        if sellerFilter:
-            products = Product.objects.filter(seller= sellerFilter)
+
+        sellerUsername = request.query_params.get('seller')
+
+        priceOrder = request.query_params.get('order')
+
+        # make defult order value to be ordered randomly
+        option = '?'
+
+        if priceOrder == 'DESC':
+            option = '-price'
+        elif priceOrder == 'ASC':
+            option = 'price'
+
+        if sellerUsername:
+            sellerID = User.objects.get(username=sellerUsername).pk
+            products = Product.objects.filter(seller= sellerID).order_by(option)
+        else:
+            products = Product.objects.order_by(option)
 
 
         serializer = ProductSerializer(products, many=True)
