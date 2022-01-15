@@ -26,7 +26,13 @@ class ProductList(APIView):
             option = 'price'
 
         if sellerUsername:
-            sellerID = User.objects.get(username=sellerUsername).pk
+            try:
+                sellerID = User.objects.get(username=sellerUsername).pk
+            except User.DoesNotExist:
+                return Response(
+                    "this seller doesn't exist",
+                    status=status.HTTP_404_NOT_FOUND
+                )
             products = Product.objects.filter(seller=sellerID).order_by(option)
         else:
             products = Product.objects.order_by(option)
