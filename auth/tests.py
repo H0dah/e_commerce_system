@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 class AuthTest(APITestCase):
     def setUp(self):
         self.test_user = User.objects.create_user('testuser', 'test@example.com', 'testpassword')
-        self.create_url = reverse('user-create')
+        self.create_url = reverse('register')
 
     def test_create_user(self):
         """
