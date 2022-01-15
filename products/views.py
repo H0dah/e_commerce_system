@@ -17,6 +17,7 @@ class ProductList(APIView):
 
     # create product view
     def post(self, request, format='json'):
+        request.data['seller'] = request.user.id
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
