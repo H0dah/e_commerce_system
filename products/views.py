@@ -11,7 +11,13 @@ class ProductList(APIView):
     """
     # get products
     def get(self, request, format='json'):
+        
         products = Product.objects.all()
+        sellerFilter = request.query_params['seller']
+        if sellerFilter:
+            products = Product.objects.filter(seller= sellerFilter)
+
+
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
