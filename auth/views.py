@@ -4,8 +4,8 @@ from rest_framework import status
 from auth.serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 
-class UserCreate(APIView):
 
+class UserCreate(APIView):
     def post(self, request, format='json'):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

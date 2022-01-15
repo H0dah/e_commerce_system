@@ -1,6 +1,5 @@
 from products.models import Product
 from products.serializers import ProductSerializer
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,7 +11,7 @@ class ProductList(APIView):
     List all products, or create a new product.
     """
     # get products
-    def get(self, request, format='json'):
+    def get(self, request):
 
         sellerUsername = request.query_params.get('seller')
 
@@ -28,16 +27,15 @@ class ProductList(APIView):
 
         if sellerUsername:
             sellerID = User.objects.get(username=sellerUsername).pk
-            products = Product.objects.filter(seller= sellerID).order_by(option)
+            products = Product.objects.filter(seller=sellerID).order_by(option)
         else:
             products = Product.objects.order_by(option)
-
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
     # create product view
-    def post(self, request, format='json'):
+    def post(self, request):
         request.data['seller'] = request.user.id
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
